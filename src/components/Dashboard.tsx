@@ -3,7 +3,7 @@
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Database, User, LogOut, Settings } from 'lucide-react'
+import { Database, User, LogOut, Settings, Upload, FileText } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Dashboard() {
@@ -45,6 +45,29 @@ export default function Dashboard() {
         <div className="px-4 py-6 sm:px-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
+            {/* Document Upload Card */}
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Upload className="h-5 w-5 text-green-600" />
+                  <span>Document Upload</span>
+                </CardTitle>
+                <CardDescription>
+                  Upload Word documents and create embeddings
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-4">
+                  Upload .docx files, extract text, and store embeddings in your choice of vector database.
+                </p>
+                <Link href="/demo/upload">
+                  <Button className="w-full">
+                    Upload Documents
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
             {/* Vector Database Demo Card */}
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
