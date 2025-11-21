@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:migrate": "prisma migrate"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^1.0.27",

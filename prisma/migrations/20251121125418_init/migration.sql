@@ -1,9 +1,47 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "Account" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "providerAccountId" TEXT NOT NULL,
+    "refresh_token" TEXT,
+    "access_token" TEXT,
+    "expires_at" INTEGER,
+    "token_type" TEXT,
+    "scope" TEXT,
+    "id_token" TEXT,
+    "session_state" TEXT,
+    CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-  - Added the required column `updatedAt` to the `User` table without a default value. This is not possible if the table is not empty.
+-- CreateTable
+CREATE TABLE "Session" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "sessionToken" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "expires" DATETIME NOT NULL,
+    CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-*/
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT,
+    "email" TEXT,
+    "emailVerified" DATETIME,
+    "image" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "VerificationToken" (
+    "identifier" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "expires" DATETIME NOT NULL
+);
+
 -- CreateTable
 CREATE TABLE "Project" (
     "id" TEXT NOT NULL PRIMARY KEY,
@@ -50,24 +88,34 @@ CREATE TABLE "Chunk" (
     CONSTRAINT "Chunk_fileId_fkey" FOREIGN KEY ("fileId") REFERENCES "File" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- RedefineTables
-PRAGMA defer_foreign_keys=ON;
-PRAGMA foreign_keys=OFF;
-CREATE TABLE "new_User" (
+-- CreateTable
+CREATE TABLE "ApiToken" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "name" TEXT,
-    "email" TEXT,
-    "emailVerified" DATETIME,
-    "image" TEXT,
+    "name" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "expiresAt" DATETIME,
+    "lastUsedAt" DATETIME,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "ApiToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
-INSERT INTO "new_User" ("email", "emailVerified", "id", "image", "name") SELECT "email", "emailVerified", "id", "image", "name" FROM "User";
-DROP TABLE "User";
-ALTER TABLE "new_User" RENAME TO "User";
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-PRAGMA foreign_keys=ON;
-PRAGMA defer_foreign_keys=OFF;
+
+-- CreateIndex
+CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
 
 -- CreateIndex
 CREATE INDEX "Project_userId_idx" ON "Project"("userId");
@@ -92,3 +140,12 @@ CREATE INDEX "Chunk_fileId_idx" ON "Chunk"("fileId");
 
 -- CreateIndex
 CREATE INDEX "Chunk_vectorId_idx" ON "Chunk"("vectorId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ApiToken_token_key" ON "ApiToken"("token");
+
+-- CreateIndex
+CREATE INDEX "ApiToken_userId_idx" ON "ApiToken"("userId");
+
+-- CreateIndex
+CREATE INDEX "ApiToken_token_idx" ON "ApiToken"("token");

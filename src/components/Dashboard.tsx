@@ -3,7 +3,7 @@
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Database, User, LogOut, Settings, Upload, FileText } from 'lucide-react'
+import { Database, User, LogOut, Settings, Upload, FileText, FolderKanban, List } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Dashboard() {
@@ -26,8 +26,8 @@ export default function Dashboard() {
                   Welcome, {session?.user?.name || 'Admin'}
                 </span>
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => signOut()}
                 className="flex items-center space-x-2"
@@ -44,25 +44,48 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {/* Document Upload Card */}
+
+            {/* Admin Dashboard Card */}
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Upload className="h-5 w-5 text-green-600" />
-                  <span>Document Upload</span>
+                  <Settings className="h-5 w-5 text-blue-600" />
+                  <span>Admin Dashboard</span>
                 </CardTitle>
                 <CardDescription>
-                  Upload Word documents and create embeddings
+                  View statistics and quick actions
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4">
-                  Upload .docx files, extract text, and store embeddings in your choice of vector database.
+                  Access the main admin dashboard with project statistics and recent activities.
                 </p>
-                <Link href="/demo/upload">
+                <Link href="/admin">
                   <Button className="w-full">
-                    Upload Documents
+                    Open Dashboard
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* Projects Management Card */}
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <FolderKanban className="h-5 w-5 text-purple-600" />
+                  <span>Projects</span>
+                </CardTitle>
+                <CardDescription>
+                  Manage your projects and configurations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-4">
+                  Create, view, and manage projects with CRUD operations.
+                </p>
+                <Link href="/admin/projects">
+                  <Button className="w-full">
+                    Manage Projects
                   </Button>
                 </Link>
               </CardContent>
@@ -72,7 +95,7 @@ export default function Dashboard() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Database className="h-5 w-5 text-blue-600" />
+                  <Database className="h-5 w-5 text-green-600" />
                   <span>Vector Database</span>
                 </CardTitle>
                 <CardDescription>
@@ -129,18 +152,24 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  <Database className="h-4 w-4 mr-2" />
-                  Manage Databases
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <User className="h-4 w-4 mr-2" />
-                  User Management
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Settings className="h-4 w-4 mr-2" />
-                  System Settings
-                </Button>
+                <Link href="/admin" className="block">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Admin Dashboard
+                  </Button>
+                </Link>
+                <Link href="/admin/projects" className="block">
+                  <Button variant="outline" className="w-full justify-start">
+                    <FolderKanban className="h-4 w-4 mr-2" />
+                    Manage Projects
+                  </Button>
+                </Link>
+                <Link href="/demo/embedding" className="block">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Database className="h-4 w-4 mr-2" />
+                    Vector Demo
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
