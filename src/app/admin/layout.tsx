@@ -1,7 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import { Database, FolderOpen, Home, Search } from 'lucide-react'
+import { LanguageSwitcher } from '@/components/ui/language-switcher'
+import { useTranslation } from '@/components/providers/I18nProvider'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation()
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 顶部导航栏 */}
@@ -11,14 +16,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex items-center gap-3">
               <Database className="h-8 w-8 text-blue-600" />
               <div>
-                <h1 className="text-xl font-bold">向量索引管理系统</h1>
-                <p className="text-xs text-gray-500">Vector Index Management System</p>
+                <h1 className="text-xl font-bold">{t('navigation.systemTitle')}</h1>
+                <p className="text-xs text-gray-500">{t('navigation.systemSubtitle')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-600">
-                <span className="font-medium">用户:</span> demo-user
-              </div>
+              <LanguageSwitcher />
             </div>
           </div>
         </div>
@@ -35,24 +38,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Home className="h-5 w-5 text-gray-600" />
-                  <span className="font-medium text-gray-700">首页</span>
+                  <span className="font-medium text-gray-700">{t('navigation.home')}</span>
                 </Link>
                 <Link
                   href="/admin/projects"
                   className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <FolderOpen className="h-5 w-5 text-gray-600" />
-                  <span className="font-medium text-gray-700">我的项目</span>
+                  <span className="font-medium text-gray-700">{t('navigation.myProjects')}</span>
                 </Link>
                 <div className="pt-4 mt-4 border-t border-gray-200">
                   <p className="text-xs font-semibold text-gray-500 uppercase px-4 mb-2">
-                    快速操作
+                    {t('navigation.quickActions')}
                   </p>
                   <Link
                     href="/admin/projects"
                     className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm"
                   >
-                    <span className="text-gray-600">创建项目</span>
+                    <span className="text-gray-600">{t('navigation.createProject')}</span>
                   </Link>
                 </div>
               </div>
@@ -68,7 +71,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <footer className="bg-white border-t border-gray-200 mt-12">
         <div className="container mx-auto px-6 py-6">
           <div className="text-center text-sm text-gray-500">
-            <p>© 2024 向量索引管理系统. 基于 Next.js + Prisma + LibSQL 构建</p>
+            <p>{t('navigation.footerText')}</p>
           </div>
         </div>
       </footer>

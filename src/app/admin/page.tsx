@@ -14,8 +14,10 @@ import {
 } from 'lucide-react'
 import { getProjectList } from './projects/actions'
 import Link from 'next/link'
+import { useTranslation } from '@/components/providers/I18nProvider'
 
 export default function AdminDashboard() {
+  const { t } = useTranslation()
   const [stats, setStats] = useState({
     totalProjects: 0,
     totalIndexes: 0,
@@ -55,8 +57,8 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* 页面标题 */}
       <div>
-        <h1 className="text-3xl font-bold">仪表板</h1>
-        <p className="text-gray-600 mt-1">欢迎回来，查看您的项目概况</p>
+        <h1 className="text-3xl font-bold">{t('dashboard.title')}</h1>
+        <p className="text-gray-600 mt-1">{t('dashboard.subtitle')}</p>
       </div>
 
       {/* 统计卡片 */}
@@ -69,33 +71,33 @@ export default function AdminDashboard() {
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">总项目数</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-600">{t('dashboard.totalProjects')}</CardTitle>
                 <FolderOpen className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{stats.totalProjects}</div>
                 <p className="text-xs text-gray-500 mt-1">
-                  {stats.totalProjects > 0 ? '管理中的项目' : '还没有项目'}
+                  {stats.totalProjects > 0 ? t('dashboard.projectsManaged') : t('dashboard.noProjects')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">总索引数</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-600">{t('dashboard.totalIndexes')}</CardTitle>
                 <Database className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{stats.totalIndexes}</div>
                 <p className="text-xs text-gray-500 mt-1">
-                  {stats.totalIndexes > 0 ? '活跃的向量索引' : '还没有索引'}
+                  {stats.totalIndexes > 0 ? t('dashboard.activeIndexes') : t('dashboard.noIndexes')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">平均索引数</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-600">{t('dashboard.averageIndexes')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
@@ -104,7 +106,7 @@ export default function AdminDashboard() {
                     ? (stats.totalIndexes / stats.totalProjects).toFixed(1)
                     : '0'}
                 </div>
-                <p className="text-xs text-gray-500 mt-1">每个项目的平均索引数</p>
+                <p className="text-xs text-gray-500 mt-1">{t('dashboard.averagePerProject')}</p>
               </CardContent>
             </Card>
           </div>
@@ -112,8 +114,8 @@ export default function AdminDashboard() {
           {/* 快速操作 */}
           <Card>
             <CardHeader>
-              <CardTitle>快速开始</CardTitle>
-              <CardDescription>快速创建和管理您的向量索引项目</CardDescription>
+              <CardTitle>{t('dashboard.quickStart')}</CardTitle>
+              <CardDescription>{t('dashboard.quickStartDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
@@ -122,9 +124,9 @@ export default function AdminDashboard() {
                     <div className="flex items-start gap-3">
                       <Plus className="h-5 w-5 mt-0.5" />
                       <div className="text-left">
-                        <div className="font-semibold">创建新项目</div>
+                        <div className="font-semibold">{t('dashboard.createNewProject')}</div>
                         <div className="text-sm text-gray-500 font-normal">
-                          开始一个新的向量索引项目
+                          {t('dashboard.createNewProjectDesc')}
                         </div>
                       </div>
                     </div>
@@ -136,9 +138,9 @@ export default function AdminDashboard() {
                     <div className="flex items-start gap-3">
                       <FolderOpen className="h-5 w-5 mt-0.5" />
                       <div className="text-left">
-                        <div className="font-semibold">浏览项目</div>
+                        <div className="font-semibold">{t('dashboard.browseProjects')}</div>
                         <div className="text-sm text-gray-500 font-normal">
-                          查看和管理现有项目
+                          {t('dashboard.browseProjectsDesc')}
                         </div>
                       </div>
                     </div>
@@ -154,12 +156,12 @@ export default function AdminDashboard() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>最近的项目</CardTitle>
-                    <CardDescription>您最近更新的项目</CardDescription>
+                    <CardTitle>{t('dashboard.recentProjects')}</CardTitle>
+                    <CardDescription>{t('dashboard.recentProjectsDesc')}</CardDescription>
                   </div>
                   <Link href="/admin/projects">
                     <Button variant="ghost" size="sm">
-                      查看全部
+                      {t('common.viewAll')}
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </Link>
@@ -183,7 +185,7 @@ export default function AdminDashboard() {
                         </div>
                         <div className="flex items-center gap-4 flex-shrink-0 ml-4">
                           <div className="text-sm text-gray-500">
-                            <span className="font-medium">{project._count?.indexes || 0}</span> 个索引
+                            <span className="font-medium">{project._count?.indexes || 0}</span>{t('dashboard.indexes')}
                           </div>
                           <ArrowRight className="h-4 w-4 text-gray-400" />
                         </div>
@@ -200,14 +202,14 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <FolderOpen className="h-16 w-16 text-gray-300 mb-4" />
-                <h3 className="text-lg font-semibold mb-2">开始您的第一个项目</h3>
+                <h3 className="text-lg font-semibold mb-2">{t('dashboard.startFirstProject')}</h3>
                 <p className="text-gray-500 text-center mb-6 max-w-md">
-                  创建一个项目来组织您的向量索引，上传文档并进行语义搜索
+                  {t('dashboard.startFirstProjectDesc')}
                 </p>
                 <Link href="/admin/projects">
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    创建项目
+                    {t('dashboard.createProject')}
                   </Button>
                 </Link>
               </CardContent>
@@ -217,36 +219,36 @@ export default function AdminDashboard() {
           {/* 使用提示 */}
           <Card className="bg-blue-50 border-blue-200">
             <CardHeader>
-              <CardTitle className="text-blue-900">💡 使用提示</CardTitle>
+              <CardTitle className="text-blue-900">💡 {t('dashboard.usageTips')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-blue-800">
                 <li className="flex items-start gap-2">
                   <span className="font-semibold mt-0.5">1.</span>
                   <span>
-                    <strong>创建项目：</strong>
-                    首先创建一个项目来组织您的向量索引
+                    <strong>{t('dashboard.tip1Title')}</strong>
+                    {t('dashboard.tip1Desc')}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-semibold mt-0.5">2.</span>
                   <span>
-                    <strong>创建索引：</strong>
-                    在项目中创建索引，指定向量维度
+                    <strong>{t('dashboard.tip2Title')}</strong>
+                    {t('dashboard.tip2Desc')}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-semibold mt-0.5">3.</span>
                   <span>
-                    <strong>上传文档：</strong>
-                    上传 Word 文档或直接输入文本内容
+                    <strong>{t('dashboard.tip3Title')}</strong>
+                    {t('dashboard.tip3Desc')}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-semibold mt-0.5">4.</span>
                   <span>
-                    <strong>语义搜索：</strong>
-                    使用自然语言搜索相关文档内容
+                    <strong>{t('dashboard.tip4Title')}</strong>
+                    {t('dashboard.tip4Desc')}
                   </span>
                 </li>
               </ul>

@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, FileText } from 'lucide-react'
 import { uploadTextDocument } from './files/actions'
+import { useTranslation } from '@/components/providers/I18nProvider'
 
 interface UploadTextFormProps {
   indexId: string
@@ -20,6 +21,7 @@ export default function UploadTextForm({
   onSuccess,
   showMessage,
 }: UploadTextFormProps) {
+  const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
@@ -28,7 +30,7 @@ export default function UploadTextForm({
     e.preventDefault()
 
     if (!content.trim()) {
-      showMessage('error', '内容不能为空')
+      showMessage('error', t('upload.contentRequired'))
       return
     }
 
@@ -42,12 +44,12 @@ export default function UploadTextForm({
     setLoading(false)
 
     if (result.success) {
-      showMessage('success', result.message || '文本上传成功')
+      showMessage('success', result.message || t('upload.uploadSuccess'))
       setTitle('')
       setContent('')
       onSuccess()
     } else {
-      showMessage('error', result.error || '上传失败')
+      showMessage('error', result.error || t('upload.uploadFailed'))
     }
   }
 
@@ -56,33 +58,33 @@ export default function UploadTextForm({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5" />
-          上传文本内容
+          {t('upload.uploadTextContent')}
         </CardTitle>
-        <CardDescription>直接输入或粘贴文本内容进行处理</CardDescription>
+        <CardDescription>{t('upload.uploadTextContentDesc')}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-sm font-medium">标题（可选）</label>
+            <label className="text-sm font-medium">{t('upload.titleOptional')}</label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="例如：产品使用指南"
+              placeholder={t('upload.titlePlaceholder')}
               disabled={loading}
             />
           </div>
           <div>
-            <label className="text-sm font-medium">文本内容</label>
+            <label className="text-sm font-medium">{t('upload.textContent')}</label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="在此输入或粘贴文本内容..."
+              placeholder={t('upload.textContentPlaceholder')}
               disabled={loading}
               rows={10}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
             <p className="text-xs text-gray-500 mt-1">
-              文本将被自动分块并生成向量嵌入
+              {t('upload.autoChunking')}
             </p>
           </div>
 
@@ -90,12 +92,12 @@ export default function UploadTextForm({
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                处理中...
+                {t('common.processing')}
               </>
             ) : (
               <>
                 <FileText className="h-4 w-4 mr-2" />
-                上传并处理
+                {t('upload.uploadAndProcess')}
               </>
             )}
           </Button>

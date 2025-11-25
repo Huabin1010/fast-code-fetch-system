@@ -5,9 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Database, User, LogOut, Settings, Upload, FileText, FolderKanban, List } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslation } from '@/components/providers/I18nProvider'
+import { LanguageSwitcherButton } from '@/components/ui/language-switcher'
 
 export default function Dashboard() {
   const { data: session } = useSession()
+  const { t } = useTranslation()
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -17,13 +20,14 @@ export default function Dashboard() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Settings className="h-8 w-8 text-blue-600 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-xl font-semibold text-gray-900">{t('mainDashboard.headerTitle')}</h1>
             </div>
             <div className="flex items-center space-x-4">
+              <LanguageSwitcherButton />
               <div className="flex items-center space-x-2">
                 <User className="h-5 w-5 text-gray-500" />
                 <span className="text-sm text-gray-700">
-                  Welcome, {session?.user?.name || 'Admin'}
+                  {t('mainDashboard.welcome')}, {session?.user?.name || 'Admin'}
                 </span>
               </div>
               <Button
@@ -33,7 +37,7 @@ export default function Dashboard() {
                 className="flex items-center space-x-2"
               >
                 <LogOut className="h-4 w-4" />
-                <span>Sign Out</span>
+                <span>{t('mainDashboard.signOut')}</span>
               </Button>
             </div>
           </div>
@@ -50,19 +54,19 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Settings className="h-5 w-5 text-blue-600" />
-                  <span>Admin Dashboard</span>
+                  <span>{t('mainDashboard.adminDashboard')}</span>
                 </CardTitle>
                 <CardDescription>
-                  View statistics and quick actions
+                  {t('mainDashboard.adminDashboardDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4">
-                  Access the main admin dashboard with project statistics and recent activities.
+                  {t('mainDashboard.adminDashboardContent')}
                 </p>
                 <Link href="/admin">
                   <Button className="w-full">
-                    Open Dashboard
+                    {t('mainDashboard.openDashboard')}
                   </Button>
                 </Link>
               </CardContent>
@@ -73,19 +77,19 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <FolderKanban className="h-5 w-5 text-purple-600" />
-                  <span>Projects</span>
+                  <span>{t('mainDashboard.projects')}</span>
                 </CardTitle>
                 <CardDescription>
-                  Manage your projects and configurations
+                  {t('mainDashboard.projectsDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4">
-                  Create, view, and manage projects with CRUD operations.
+                  {t('mainDashboard.projectsContent')}
                 </p>
                 <Link href="/admin/projects">
                   <Button className="w-full">
-                    Manage Projects
+                    {t('mainDashboard.manageProjects')}
                   </Button>
                 </Link>
               </CardContent>
@@ -96,19 +100,19 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Database className="h-5 w-5 text-green-600" />
-                  <span>Vector Database</span>
+                  <span>{t('mainDashboard.vectorDatabase')}</span>
                 </CardTitle>
                 <CardDescription>
-                  Explore vector storage and similarity search with LibSQL
+                  {t('mainDashboard.vectorDatabaseDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4">
-                  Interactive demo for creating indexes, storing embeddings, and performing vector similarity searches.
+                  {t('mainDashboard.vectorDatabaseContent')}
                 </p>
                 <Link href="/demo/embedding">
                   <Button className="w-full">
-                    Open Demo
+                    {t('mainDashboard.openDemo')}
                   </Button>
                 </Link>
               </CardContent>
@@ -119,25 +123,25 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Settings className="h-5 w-5 text-green-600" />
-                  <span>System Status</span>
+                  <span>{t('mainDashboard.systemStatus')}</span>
                 </CardTitle>
                 <CardDescription>
-                  Current system information
+                  {t('mainDashboard.systemStatusDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Status:</span>
-                    <span className="text-green-600 font-medium">Online</span>
+                    <span className="text-gray-600">{t('mainDashboard.status')}:</span>
+                    <span className="text-green-600 font-medium">{t('mainDashboard.online')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Auth:</span>
-                    <span className="text-green-600 font-medium">Active</span>
+                    <span className="text-gray-600">{t('mainDashboard.auth')}:</span>
+                    <span className="text-green-600 font-medium">{t('mainDashboard.active')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Database:</span>
-                    <span className="text-green-600 font-medium">Connected</span>
+                    <span className="text-gray-600">{t('mainDashboard.database')}:</span>
+                    <span className="text-green-600 font-medium">{t('mainDashboard.connected')}</span>
                   </div>
                 </div>
               </CardContent>
@@ -146,28 +150,28 @@ export default function Dashboard() {
             {/* Quick Actions Card */}
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle>{t('mainDashboard.quickActions')}</CardTitle>
                 <CardDescription>
-                  Common administrative tasks
+                  {t('mainDashboard.quickActionsDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Link href="/admin" className="block">
                   <Button variant="outline" className="w-full justify-start">
                     <Settings className="h-4 w-4 mr-2" />
-                    Admin Dashboard
+                    {t('mainDashboard.adminDashboard')}
                   </Button>
                 </Link>
                 <Link href="/admin/projects" className="block">
                   <Button variant="outline" className="w-full justify-start">
                     <FolderKanban className="h-4 w-4 mr-2" />
-                    Manage Projects
+                    {t('mainDashboard.manageProjects')}
                   </Button>
                 </Link>
                 <Link href="/demo/embedding" className="block">
                   <Button variant="outline" className="w-full justify-start">
                     <Database className="h-4 w-4 mr-2" />
-                    Vector Demo
+                    {t('mainDashboard.vectorDemo')}
                   </Button>
                 </Link>
               </CardContent>
@@ -179,15 +183,14 @@ export default function Dashboard() {
           <div className="mt-8">
             <Card>
               <CardHeader>
-                <CardTitle>Welcome to the Admin Dashboard</CardTitle>
+                <CardTitle>{t('mainDashboard.welcomeTitle')}</CardTitle>
                 <CardDescription>
-                  You are successfully logged in as an administrator
+                  {t('mainDashboard.welcomeDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  This is a simple admin dashboard with basic authentication. You can access various features and demos from here.
-                  The vector database demo showcases advanced embedding storage and similarity search capabilities.
+                  {t('mainDashboard.welcomeContent')}
                 </p>
               </CardContent>
             </Card>

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getFilesInIndex, getFileChunks, deleteFile, getIndexStats } from './file-action'
 import { FileText, Trash2, ChevronDown, ChevronRight, Database } from 'lucide-react'
+import { useTranslation } from '@/components/providers/I18nProvider'
 
 interface FileInfo {
     source: string
@@ -42,6 +43,7 @@ export default function FileManagement({
     setSelectedIndex,
     showMessage
 }: FileManagementProps) {
+    const { t } = useTranslation()
     const [files, setFiles] = useState<FileInfo[]>([])
     const [expandedFile, setExpandedFile] = useState<string | null>(null)
     const [chunks, setChunks] = useState<Record<string, ChunkInfo[]>>({})
@@ -66,7 +68,7 @@ export default function FileManagement({
         if (result.success && result.data) {
             setFiles(result.data)
         } else {
-            showMessage('error', result.error || 'Failed to load files')
+            showMessage('error', result.error || t('embedding.messages.loadFilesFailed'))
         }
     }
 
@@ -91,18 +93,18 @@ export default function FileManagement({
             setChunks(prev => ({ ...prev, [fileName]: result.data }))
             setExpandedFile(fileName)
         } else {
-            showMessage('error', result.error || 'Failed to load chunks')
+            showMessage('error', result.error || t('embedding.messages.loadFilesFailed'))
         }
     }
 
     const handleDeleteFile = async (fileName: string) => {
-        if (!confirm(`确定要删除文件 "${fileName}" 及其所有 chunks 吗？`)) {
+        if (!confirm(t('embedding.messages.deleteFileConfirm', { fileName }))) {
             return
         }
 
         const result = await deleteFile(selectedIndex, fileName)
         if (result.success) {
-            showMessage('success', result.message || 'File deleted successfully')
+            showMessage('success', result.message || t('embedding.messages.fileDeleted'))
             loadFiles()
             loadStats()
             // 清除缓存的 chunks
@@ -115,7 +117,7 @@ export default function FileManagement({
                 setExpandedFile(null)
             }
         } else {
-            showMessage('error', result.error || 'Failed to delete file')
+            showMessage('error', result.error || t('embedding.messages.deleteFileFailed'))
         }
     }
 
@@ -126,7 +128,7 @@ export default function FileManagement({
     }
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleString('zh-CN')
+        return new Date(dateString).toLocaleString()
     }
 
     return (
@@ -134,24 +136,24 @@ export default function FileManagement({
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Database className="w-6 h-6" />
-                    File Management
+                    {t('embedding.fileManagement.title')}
                 </CardTitle>
                 <CardDescription>
-                    View and manage files stored in vector indexes
+                    {t('embedding.fileManagement.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 {/* Index 选择器 */}
                 <div className="flex items-center gap-4">
-                    <label className="font-medium">Select Index:</label>
+                    <label className="font-medium">{t('embedding.fileManagement.selectIndex')}</label>
                     <Select value={selectedIndex} onValueChange={setSelectedIndex}>
                         <SelectTrigger className="w-64">
-                            <SelectValue placeholder="Select an index" />
+                            <SelectValue placeholder={t('embedding.embeddings.selectIndex')} />
                         </SelectTrigger>
                         <SelectContent>
                             {indexes.length === 0 ? (
                                 <SelectItem value="no-indexes" disabled>
-                                    No indexes available
+                                    {t('embedding.embeddings.noIndexesAvailable')}
                                 </SelectItem>
                             ) : (
                                 indexes.map(index => (
@@ -168,11 +170,11 @@ export default function FileManagement({
                 {stats && (
                     <div className="flex gap-6 p-4 bg-muted rounded-lg">
                         <div>
-                            <div className="text-sm text-muted-foreground">Total Files</div>
+                            <div className="text-sm text-muted-foreground">{t('embedding.fileManagement.totalFiles')}</div>
                             <div className="text-2xl font-bold">{stats.totalFiles}</div>
                         </div>
                         <div>
-                            <div className="text-sm text-muted-foreground">Total Chunks</div>
+                            <div className="text-sm text-muted-foreground">{t('embedding.fileManagement.totalChunks')}</div>
                             <div className="text-2xl font-bold">{stats.totalChunks}</div>
                         </div>
                     </div>
@@ -181,11 +183,11 @@ export default function FileManagement({
                 {/* 文件列表 */}
                 {loading ? (
                     <div className="text-center py-8 text-muted-foreground">
-                        Loading...
+                        {t('embedding.fileManagement.loading')}
                     </div>
                 ) : files.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
-                        {selectedIndex ? 'No files in this index' : 'Please select an index'}
+                        {selectedIndex ? t('embedding.fileManagement.noFiles') : t('embedding.fileManagement.pleaseSelectIndex')}
                     </div>
                 ) : (
                     <div className="space-y-2">
@@ -209,7 +211,7 @@ export default function FileManagement({
                                             <div className="flex-1">
                                                 <div className="font-medium">{file.source}</div>
                                                 <div className="text-sm text-muted-foreground">
-                                                    {formatFileSize(file.fileSize)} · {file.chunkCount} chunks · {formatDate(file.createdAt)}
+                                                    {formatFileSize(file.fileSize)} · {file.chunkCount}{t('embedding.fileManagement.chunks')} · {formatDate(file.createdAt)}
                                                 </div>
                                             </div>
                                         </div>
@@ -237,7 +239,7 @@ export default function FileManagement({
                                                             <CardContent className="p-4">
                                                                 <div className="flex items-start justify-between mb-2">
                                                                     <div className="text-sm font-medium">
-                                                                        Chunk {chunk.chunkIndex + 1} / {chunk.totalChunks}
+                                                                        {t('embedding.vectorSearch.chunk')} {chunk.chunkIndex + 1} / {chunk.totalChunks}
                                                                     </div>
                                                                     <div className="text-xs text-muted-foreground">
                                                                         ID: {chunk.id}
@@ -296,7 +298,7 @@ export default function FileManagement({
                                                                             }
                                                                         }}
                                                                     >
-                                                                        Expand/Collapse
+                                                                        {t('embedding.fileManagement.expandCollapse')}
                                                                     </Button>
                                                                 </CardContent>
                                                             </Card>
@@ -305,7 +307,7 @@ export default function FileManagement({
                                                         {/* 省略号提示 */}
                                                         <div className="flex items-center justify-center py-4 text-muted-foreground">
                                                             <div className="text-sm">
-                                                                ··· {hiddenCount} more chunks hidden ···
+                                                                ··· {hiddenCount}{t('embedding.fileManagement.moreChunksHidden')}···
                                                             </div>
                                                         </div>
                                                         

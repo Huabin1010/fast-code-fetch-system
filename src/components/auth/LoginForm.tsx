@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, AlertCircle } from 'lucide-react'
+import { useTranslation } from '@/components/providers/I18nProvider'
 
 export default function LoginForm() {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -49,28 +51,28 @@ export default function LoginForm() {
         
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-            Username
+            {t('auth.username')}
           </label>
           <Input
             id="email"
             type="text"
             value={email}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-            placeholder="admin"
+            placeholder={t('auth.usernamePlaceholder')}
             required
           />
         </div>
 
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-            Password
+            {t('auth.password')}
           </label>
           <Input
             id="password"
             type="password"
             value={password}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-            placeholder="123456qq"
+            placeholder={t('auth.passwordPlaceholder')}
             required
           />
         </div>
@@ -83,18 +85,18 @@ export default function LoginForm() {
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Signing in...
+              {t('auth.signingIn')}
             </>
           ) : (
-            'Sign In'
+            t('auth.signIn')
           )}
         </Button>
       </form>
       
       <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600">
-        <strong>Default Admin Credentials:</strong><br />
-        Username: admin<br />
-        Password: 123456qq
+        <strong>{t('auth.defaultCredentials')}:</strong><br />
+        {t('auth.username')}: admin<br />
+        {t('auth.password')}: 123456qq
       </div>
     </div>
   )

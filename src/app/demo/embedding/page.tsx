@@ -9,6 +9,8 @@ import IndexManagement from './IndexManagement'
 import EmbeddingsUpload from './EmbeddingsUpload'
 import VectorSearch from './VectorSearch'
 import FileManagement from './FileManagement'
+import { useTranslation } from '@/components/providers/I18nProvider'
+import { LanguageSwitcherButton } from '@/components/ui/language-switcher'
 
 interface Index {
     name: string
@@ -17,6 +19,7 @@ interface Index {
 }
 
 export default function EmbeddingPage() {
+    const { t } = useTranslation()
     const [indexes, setIndexes] = useState<Index[]>([])
     const [loading, setLoading] = useState(false)
     const [newIndexName, setNewIndexName] = useState('')
@@ -52,24 +55,27 @@ export default function EmbeddingPage() {
                     ? indexData.map(index => typeof index === 'string' ? { name: index } : index)
                     : []
                 setIndexes(formattedIndexes)
-                showMessage('success', 'Indexes loaded successfully')
+                showMessage('success', t('embedding.messages.indexesLoaded'))
             } else {
-                showMessage('error', result.error || 'Failed to load indexes')
+                showMessage('error', result.error || t('embedding.messages.loadIndexesFailed'))
             }
         } catch (error) {
-            showMessage('error', 'Failed to load indexes')
+            showMessage('error', t('embedding.messages.loadIndexesFailed'))
         }
         setLoading(false)
     }
 
     return (
         <div className="container mx-auto p-6 space-y-6">
-            <div className="flex items-center gap-3 mb-8">
-                <Database className="h-8 w-8 text-blue-600" />
-                <div>
-                    <h1 className="text-3xl font-bold">Vector Database Demo</h1>
-                    <p className="text-gray-600">Explore vector storage and similarity search with LibSQL</p>
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                    <Database className="h-8 w-8 text-blue-600" />
+                    <div>
+                        <h1 className="text-3xl font-bold">{t('embedding.pageTitle')}</h1>
+                        <p className="text-gray-600">{t('embedding.pageSubtitle')}</p>
+                    </div>
                 </div>
+                <LanguageSwitcherButton />
             </div>
 
             {message && (
@@ -83,10 +89,10 @@ export default function EmbeddingPage() {
 
             <Tabs defaultValue="indexes" className="space-y-6">
                 <TabsList className="grid w-full grid-cols-4">
-                    <TabsTrigger value="indexes">Index Management</TabsTrigger>
-                    <TabsTrigger value="embeddings">Embeddings</TabsTrigger>
-                    <TabsTrigger value="search">Vector Search</TabsTrigger>
-                    <TabsTrigger value="files">File Management</TabsTrigger>
+                    <TabsTrigger value="indexes">{t('embedding.tabs.indexManagement')}</TabsTrigger>
+                    <TabsTrigger value="embeddings">{t('embedding.tabs.embeddings')}</TabsTrigger>
+                    <TabsTrigger value="search">{t('embedding.tabs.vectorSearch')}</TabsTrigger>
+                    <TabsTrigger value="files">{t('embedding.tabs.fileManagement')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="indexes" className="space-y-6">

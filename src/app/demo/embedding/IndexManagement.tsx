@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, Database, Plus, Trash2 } from 'lucide-react'
 import { createIndex, deleteIndex } from '../store/action'
+import { useTranslation } from '@/components/providers/I18nProvider'
 
 interface Index {
     name: string
@@ -36,11 +37,12 @@ export default function IndexManagement({
     onRefresh,
     showMessage
 }: IndexManagementProps) {
+    const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
 
     const handleCreateIndex = async () => {
         if (!newIndexName.trim()) {
-            showMessage('error', 'Index name is required')
+            showMessage('error', t('embedding.messages.indexNameRequired'))
             return
         }
         
@@ -48,14 +50,14 @@ export default function IndexManagement({
         try {
             const result = await createIndex(newIndexName, parseInt(newIndexDimension))
             if (result.success) {
-                showMessage('success', result.message || 'Index created successfully')
+                showMessage('success', result.message || t('embedding.messages.indexCreated'))
                 setNewIndexName('')
                 await onRefresh()
             } else {
-                showMessage('error', result.error || 'Failed to create index')
+                showMessage('error', result.error || t('embedding.messages.createIndexFailed'))
             }
         } catch (error) {
-            showMessage('error', 'Failed to create index')
+            showMessage('error', t('embedding.messages.createIndexFailed'))
         }
         setIsLoading(false)
     }
@@ -65,16 +67,16 @@ export default function IndexManagement({
         try {
             const result = await deleteIndex(indexName)
             if (result.success) {
-                showMessage('success', result.message || 'Index deleted successfully')
+                showMessage('success', result.message || t('embedding.messages.indexDeleted'))
                 await onRefresh()
                 if (selectedIndex === indexName) {
                     setSelectedIndex('')
                 }
             } else {
-                showMessage('error', result.error || 'Failed to delete index')
+                showMessage('error', result.error || t('embedding.messages.deleteIndexFailed'))
             }
         } catch (error) {
-            showMessage('error', 'Failed to delete index')
+            showMessage('error', t('embedding.messages.deleteIndexFailed'))
         }
         setIsLoading(false)
     }
@@ -85,26 +87,26 @@ export default function IndexManagement({
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Plus className="h-5 w-5" />
-                        Create New Index
+                        {t('embedding.indexManagement.createNewIndex')}
                     </CardTitle>
                     <CardDescription>
-                        Create a new vector index with specified dimensions
+                        {t('embedding.indexManagement.createIndexDesc')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <label className="text-sm font-medium">Index Name</label>
+                        <label className="text-sm font-medium">{t('embedding.indexManagement.indexName')}</label>
                         <Input
-                            placeholder="my_collection_123"
+                            placeholder={t('embedding.indexManagement.indexNamePlaceholder')}
                             value={newIndexName}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewIndexName(e.target.value)}
                         />
                         <p className="text-xs text-gray-500 mt-1">
-                            Use only letters, numbers, and underscores
+                            {t('embedding.indexManagement.indexNameHint')}
                         </p>
                     </div>
                     <div>
-                        <label className="text-sm font-medium">Dimensions</label>
+                        <label className="text-sm font-medium">{t('embedding.indexManagement.dimensions')}</label>
                         <Input
                             type="number"
                             value={newIndexDimension}
@@ -112,12 +114,12 @@ export default function IndexManagement({
                             className="bg-gray-50 cursor-not-allowed"
                         />
                         <p className="text-xs text-gray-500 mt-1">
-                            Configured from EMBEDDING_DIMENSION environment variable
+                            {t('embedding.indexManagement.dimensionsHint')}
                         </p>
                     </div>
                     <Button onClick={handleCreateIndex} disabled={isLoading || loading} className="w-full">
                         {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
-                        Create Index
+                        {t('embedding.indexManagement.createIndex')}
                     </Button>
                 </CardContent>
             </Card>
@@ -126,21 +128,21 @@ export default function IndexManagement({
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Database className="h-5 w-5" />
-                        Existing Indexes
+                        {t('embedding.indexManagement.existingIndexes')}
                     </CardTitle>
                     <CardDescription>
-                        Manage your vector indexes
+                        {t('embedding.indexManagement.manageIndexes')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-3">
                         <Button onClick={onRefresh} disabled={loading || isLoading} variant="outline" className="w-full">
                             {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                            Refresh Indexes
+                            {t('embedding.indexManagement.refreshIndexes')}
                         </Button>
                         
                         {indexes.length === 0 ? (
-                            <p className="text-gray-500 text-center py-4">No indexes found</p>
+                            <p className="text-gray-500 text-center py-4">{t('embedding.indexManagement.noIndexes')}</p>
                         ) : (
                             <div className="space-y-2">
                                 {indexes.map((index) => (
@@ -154,7 +156,7 @@ export default function IndexManagement({
                                                 variant="outline"
                                                 onClick={() => setSelectedIndex(index.name)}
                                             >
-                                                Select
+                                                {t('embedding.indexManagement.select')}
                                             </Button>
                                             <Button
                                                 size="sm"
