@@ -262,3 +262,84 @@ export async function processWordDocument(formData: FormData) {
 export async function getDefaultDimension() {
     return EMBEDDING_DIMENSION;
 }
+
+export async function processTestWordDocument(fileName: 'test_word.docx' | 'test_word_1.docx', indexName: string) {
+    try {
+        if (!indexName) {
+            return { success: false, error: 'No index name provided' };
+        }
+
+        // Read file from public directory
+        const fs = await import('fs/promises');
+        const path = await import('path');
+        
+        const filePath = path.join(process.cwd(), 'public', fileName);
+        
+        // Check if file exists
+        try {
+            await fs.access(filePath);
+        } catch {
+            return { success: false, error: `Test file ${fileName} not found in public directory` };
+        }
+
+        // Read file buffer
+        const buffer = await fs.readFile(filePath);
+        const fileStats = await fs.stat(filePath);
+
+        // Extract text from Word document
+        const result = await mammoth.extractRawText({ buffer });
+        const extractedText = result.value;
+
+        if (!extractedText.trim()) {
+            return { success: false, error: 'No text found in the document' };
+        }
+
+        // Chunk the text using Mastra's MDocument
+        const chunks = await chunkDocument(extractedText);
+
+        if (chunks.length === 0) {
+            return { success: false, error: 'Failed to create text chunks' };
+        }
+
+        // Extract text from chunks
+        const chunkTexts = chunks.map((chunk: any) => chunk.text);
+
+        // Generate embeddings for each chunk using batch processing
+        const embeddings = await generateBatchEmbeddings(chunkTexts);
+
+        // Upsert embeddings (index should already exist)
+        await vectorStore.upsert({
+            indexName,
+            vectors: embeddings,
+            metadata: chunks.map((chunk: any, index: number) => ({
+                id: `${fileName}_chunk_${index + 1}`,
+                text: chunk.text,
+                source: fileName,
+                chunkIndex: index,
+                totalChunks: chunks.length,
+                createdAt: new Date().toISOString(),
+                fileSize: fileStats.size,
+                category: 'User Document',
+                author: 'Test Document',
+                confidenceScore: 1.0,
+                // Include chunk metadata if available
+                ...(chunk.metadata && { chunkMetadata: chunk.metadata }),
+            })),
+        });
+
+        return {
+            success: true,
+            message: `Successfully processed ${chunks.length} chunks from "${fileName}" and stored embeddings`,
+            extractedText: extractedText.substring(0, 2000) + (extractedText.length > 2000 ? '...' : ''), // Truncate for preview
+            chunksCreated: chunks.length,
+        };
+
+    } catch (error) {
+        console.error('Test Word document processing error:', error);
+        return {
+            success: false,
+            message: 'Failed to process test Word document',
+            error: error instanceof Error ? error.message : 'An unknown error occurred'
+        };
+    }
+}

@@ -274,6 +274,13 @@ export interface TranslationMessages {
       expandCollapse: string
       moreChunksHidden: string
       chunks: string
+      expand: string
+      collapse: string
+      copyText: string
+      copied: string
+      copyFailed: string
+      chunksCount: string
+      chunksHint: string
     }
   }
 }

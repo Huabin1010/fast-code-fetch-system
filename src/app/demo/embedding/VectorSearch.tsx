@@ -298,7 +298,7 @@ export default function VectorSearch({
                                             <span className="font-medium">{t('embedding.vectorSearch.created')}:</span> {result.metadata?.createdAt ? new Date(result.metadata.createdAt).toLocaleDateString() : 'N/A'}
                                         </div>
                                         <div>
-                                            <span className="font-medium">{t('embedding.vectorSearch.confidence')}:</span> {result.metadata?.confidenceScore?.toFixed(2) || 'N/A'}
+                                            <span className="font-medium">{t('embedding.vectorSearch.confidence')}:</span> {result.score ? `${(result.score * 100).toFixed(2)}%` : 'N/A'}
                                         </div>
                                         <div>
                                             <span className="font-medium">ID:</span> {result.metadata?.id || 'N/A'}

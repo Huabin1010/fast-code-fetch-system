@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Loader2, Upload, FileText } from 'lucide-react'
-import { upsertEmbeddings, processWordDocument } from '../store/action'
+import { processWordDocument, processTestWordDocument } from '../store/action'
 import { useTranslation } from '@/components/providers/I18nProvider'
 
 interface Index {
@@ -88,7 +88,7 @@ export default function EmbeddingsUpload({
         setLoading(false)
     }
 
-    const handleUpsertEmbeddings = async () => {
+    const handleProcessTestFile = async (fileName: 'test_word.docx' | 'test_word_1.docx') => {
         if (!selectedIndex) {
             showMessage('error', t('embedding.messages.selectIndex'))
             return
@@ -96,14 +96,17 @@ export default function EmbeddingsUpload({
         
         setLoading(true)
         try {
-            const result = await upsertEmbeddings(selectedIndex)
+            const result = await processTestWordDocument(fileName, selectedIndex)
             if (result.success) {
-                showMessage('success', result.message || t('embedding.messages.embeddingsUpserted'))
+                showMessage('success', result.message || t('embedding.messages.documentProcessed'))
+                setExtractedText(result.extractedText || '')
+                await onRefresh()
             } else {
-                showMessage('error', result.error || t('embedding.messages.upsertEmbeddingsFailed'))
+                showMessage('error', result.error || t('embedding.messages.processDocumentFailed'))
             }
         } catch (error) {
-            showMessage('error', t('embedding.messages.upsertEmbeddingsFailed'))
+            console.error('Test document processing error:', error)
+            showMessage('error', `${t('embedding.messages.processDocumentFailed')}: ${error instanceof Error ? error.message : 'Unknown error'}`)
         }
         setLoading(false)
     }
@@ -193,15 +196,26 @@ export default function EmbeddingsUpload({
 
                 <div className="border-t pt-4">
                     <h4 className="font-medium mb-2">{t('embedding.embeddings.orUploadSample')}</h4>
-                    <Button 
-                        onClick={handleUpsertEmbeddings} 
-                        disabled={loading || !selectedIndex}
-                        variant="outline"
-                        className="w-full"
-                    >
-                        {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
-                        {t('embedding.embeddings.uploadSampleEmbeddings')}
-                    </Button>
+                    <div className="grid grid-cols-2 gap-2">
+                        <Button 
+                            onClick={() => handleProcessTestFile('test_word.docx')} 
+                            disabled={loading || !selectedIndex}
+                            variant="outline"
+                            className="w-full"
+                        >
+                            {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <FileText className="h-4 w-4 mr-2" />}
+                            test_word.docx
+                        </Button>
+                        <Button 
+                            onClick={() => handleProcessTestFile('test_word_1.docx')} 
+                            disabled={loading || !selectedIndex}
+                            variant="outline"
+                            className="w-full"
+                        >
+                            {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <FileText className="h-4 w-4 mr-2" />}
+                            test_word_1.docx
+                        </Button>
+                    </div>
                 </div>
             </CardContent>
         </Card>

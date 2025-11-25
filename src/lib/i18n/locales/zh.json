@@ -263,7 +263,14 @@
       "pleaseSelectIndex": "请选择索引",
       "expandCollapse": "展开/收起",
       "moreChunksHidden": "更多块已隐藏",
-      "chunks": "块"
+      "chunks": "块",
+      "expand": "展开",
+      "collapse": "收起",
+      "copyText": "复制文本",
+      "copied": "已复制到剪贴板",
+      "copyFailed": "复制失败",
+      "chunksCount": "块",
+      "chunksHint": "点击展开/收起查看完整内容，悬停显示复制按钮"
     }
   }
 }

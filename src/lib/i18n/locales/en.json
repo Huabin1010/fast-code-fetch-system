@@ -263,7 +263,14 @@
       "pleaseSelectIndex": "Please select an index",
       "expandCollapse": "Expand/Collapse",
       "moreChunksHidden": " more chunks hidden ",
-      "chunks": " chunks"
+      "chunks": " chunks",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "copyText": "Copy Text",
+      "copied": "Copied to clipboard",
+      "copyFailed": "Copy failed",
+      "chunksCount": "Chunks",
+      "chunksHint": "Click to expand/collapse full content, hover to show copy button"
     }
   }
 }
